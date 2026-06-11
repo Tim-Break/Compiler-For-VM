@@ -1,8 +1,10 @@
 ﻿string code = """
-a = 1.5
-a += 10
-a++
-if a == 11
+a = 1.5;
+a += 10;
+a++;
+if (a == 11 || a <= 0) {
+    a = 10000;
+}
 """;
 
 Diagnostic diagnostic = new Diagnostic();
