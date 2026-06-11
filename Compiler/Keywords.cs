@@ -11,6 +11,8 @@ public class Keywords
         ["break"] = new Token(TokenType.Break),
         ["continue"] = new Token(TokenType.Continue),
 
+        ["asm"] = new Token(TokenType.Asm),
+
         // Boolean values
         ["true"] = new Token(TokenType.Bool, "true"),
         ["false"] = new Token(TokenType.Bool, "false")

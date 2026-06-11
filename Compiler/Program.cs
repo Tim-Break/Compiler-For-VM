@@ -2,8 +2,13 @@
 a = 1.5;
 a += 10;
 a++;
-if (a == 11 || a <= 0) {
+if (a == 11 || a <= 0 && true && !false) {
     a = 10000;
+    print(a);
+}
+asm {
+mov r0, r1
+load r2, r1
 }
 """;
 

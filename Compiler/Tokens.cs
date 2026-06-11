@@ -9,6 +9,8 @@ public enum TokenType
     Break,      // break
     Continue,   // continue
 
+    Asm,        // asm
+
     Ident,      // any identifer
 
     Number,     // 1, 2.5 e.t.c.
