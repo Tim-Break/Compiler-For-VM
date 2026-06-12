@@ -1,4 +1,4 @@
-﻿string code = """ """;
+﻿string code = """100*(10+1)""";
 
 Diagnostic diagnostic = new Diagnostic();
 Lexer lexer = new Lexer(diagnostic);
