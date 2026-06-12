@@ -1,14 +1,14 @@
 public class Lexer
 {
-    private static Token ERROR = new Token(TokenType.ERROR);
+    static Token ERROR = new Token(TokenType.ERROR);
 
-    private Diagnostic diagnostic;
+    Diagnostic diagnostic;
 
-    private string text = "";
-    private int line = 0;
-    private int symbol = 0;
-    private char? current = null;   // null means EOF
-    private int index = 0;
+    string text = "";
+    int line = 0;
+    int symbol = 0;
+    char? current = null;   // null means EOF
+    int index = 0;
 
     public Lexer(Diagnostic diagnostic)
     {
@@ -19,12 +19,12 @@ public class Lexer
     {
         this.text = text;
         index = -1;
-        line = 0;
+        line = 1;
         symbol = -1;
         Advance();
     }
 
-    private void Advance()
+    void Advance()
     {
         index++;
         if (index == text.Length)
@@ -39,7 +39,7 @@ public class Lexer
         }
     }
 
-    private void SkipWhiteSpace()
+    void SkipWhiteSpace()
     {
         while (current != null && char.IsWhiteSpace((char)current))
         {
@@ -47,19 +47,23 @@ public class Lexer
         }
     }
 
-    private Token ReadIdentifer()
+    Token ReadIdentifer()
     {
+        int line_ = line;
+        int symbol_ = symbol;
         string identifer = "";
         while (current != null && (char.IsAsciiLetter((char)current) || char.IsAsciiDigit((char)current)))
         {
             identifer += current;
             Advance();
         }
-        return Keywords.ParseIdent(identifer);
+        return Keywords.ParseIdent(identifer, line_, symbol_);
     }
 
-    private Token ReadNumber()
+    Token ReadNumber()
     {
+        int line_ = line;
+        int symbol_ = symbol;
         string number = "";
         bool dot = false;
         while (current != null && (current == '.' || char.IsAsciiDigit((char)current)))
@@ -74,7 +78,7 @@ public class Lexer
             number += current;
             Advance();
         }
-        return new Token(TokenType.Number, number);
+        return new Token(TokenType.Number, number, line_, symbol_);
     }
 
     public Token ReadToken()
@@ -110,19 +114,25 @@ public class Lexer
             {
                 char prev = (char)current;
                 Advance();
-                if (current == prev && current != null) {Advance(); return new Token(TokenType.ModifyOp, ""+prev+prev);}
-                if (current == '=' && current != null) {Advance(); return new Token(TokenType.ModifyOp, ""+prev+"=");}
+                if (current == prev) {Advance(); return new Token(TokenType.ModifyOp, ""+prev+prev);}
+                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev+"=");}
                 return new Token(TokenType.Operator, ""+prev);
             }
-            if (current == '*' ||
-                current == '/' ||
+            if (current == '*')
+            {
+                Advance();
+                if (current == '*') {Advance(); return new Token(TokenType.Operator, "**");}
+                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, "*=");}
+                return new Token(TokenType.Operator, "*");
+            }
+            if (current == '/' ||
                 current == '%' ||
                 current == '^' ||
                 current == '~')
             {
                 char prev = (char)current;
                 Advance();
-                if (current == '=' && current != null) {Advance(); return new Token(TokenType.ModifyOp, ""+prev+"=");}
+                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev+"=");}
                 return new Token(TokenType.Operator, ""+prev);
             }
             if (current == '&' ||
@@ -130,23 +140,29 @@ public class Lexer
             {
                 char prev = (char)current;
                 Advance();
-                if (current == '=' && current != null) {Advance(); return new Token(TokenType.ModifyOp, ""+prev+"=");}
-                if (current == prev && current != null) {Advance(); return new Token(TokenType.Operator, ""+prev+prev);}
+                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev+"=");}
+                if (current == prev) {Advance(); return new Token(TokenType.Operator, ""+prev+prev);}
                 return new Token(TokenType.Operator, ""+prev);
             }
-            if (current == '!' ||
-                current == '>' ||
+            if (current == '>' ||
                 current == '<')
             {
                 char prev = (char)current;
                 Advance();
-                if (current == '=' && current != null) {Advance(); return new Token(TokenType.Operator, ""+prev+"=");}
+                if (current == prev) {Advance(); return new Token(TokenType.Operator, ""+prev+prev);}
+                if (current == '=') {Advance(); return new Token(TokenType.Operator, ""+prev+"=");}
                 return new Token(TokenType.Operator, ""+prev);
+            }
+            if (current == '!')
+            {
+                Advance();
+                if (current == '=') {Advance(); return new Token(TokenType.Operator, "!=");}
+                return new Token(TokenType.Operator, "!");
             }
             if (current == '=')
             {
                 Advance();
-                if (current == '=' && current != null) {Advance(); return new Token(TokenType.Operator, "==");}
+                if (current == '=') {Advance(); return new Token(TokenType.Operator, "==");}
                 return new Token(TokenType.Assign);
             }
             
@@ -173,7 +189,7 @@ public class Lexer
             }
 
             diagnostic.ReportError(
-                new Report("SyntaxError", "Unknown symbol", line, symbol)
+                new Report("SyntaxError", $"Unknown symbol '{current}'", line, symbol)
             );
             return ERROR;
         }

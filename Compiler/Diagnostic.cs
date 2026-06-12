@@ -12,6 +12,11 @@ public struct Report
         this.line = line;
         this.symbol = symbol;
     }
+
+    public override readonly string ToString()
+    {
+        return $"{name} at Ln {line}, Col {symbol} : {message}";
+    }
 }
 
 public class Diagnostic
@@ -22,10 +27,28 @@ public class Diagnostic
     public void ReportError(Report error)
     {
         errors.Add(error);
+        // Just throw exception
+        throw new Exception(error.ToString());
     }
 
     public void ReportWarning(Report warn)
     {
         warnings.Add(warn);
+    }
+
+    public void PrintErrors()
+    {
+        for (int i=0; i<errors.Count; i++)
+        {
+            Console.WriteLine("Error:\n\t"+errors[i].ToString());
+        }
+    }
+
+    public void PrintWarnings()
+    {
+        for (int i=0; i<warnings.Count; i++)
+        {
+            Console.WriteLine("Warning:\n\t"+warnings[i].ToString());
+        }
     }
 }

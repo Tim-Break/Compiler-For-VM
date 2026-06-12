@@ -1,6 +1,6 @@
 public class Keywords
 {
-    private static Dictionary<string, Token> keywords = new(100)
+    static Dictionary<string, Token> keywords = new(100)
     {
         ["if"] = new Token(TokenType.If),
         ["elif"] = new Token(TokenType.Elif),
@@ -18,11 +18,11 @@ public class Keywords
         ["false"] = new Token(TokenType.Bool, "false")
     };
 
-    public static Token ParseIdent(string ident)
+    public static Token ParseIdent(string ident, int line, int symbol)
     {
-        if (keywords.TryGetValue(ident, out Token? keyword))
-            return keyword;
+        if (keywords.TryGetValue(ident, out Token keyword))
+            return new Token(keyword.type, keyword.value, line, symbol);
         else
-            return new Token(TokenType.Ident, ident);
+            return new Token(TokenType.Ident, ident, line, symbol);
     }
 }
