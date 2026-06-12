@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 public struct Report
 {
     public readonly string name;
@@ -28,7 +30,8 @@ public class Diagnostic
     {
         errors.Add(error);
         // Just throw exception
-        throw new Exception(error.ToString());
+        PrintErrors();
+        throw new Exception("Got error!");
     }
 
     public void ReportWarning(Report warn)

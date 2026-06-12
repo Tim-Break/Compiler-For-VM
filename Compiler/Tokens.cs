@@ -84,7 +84,7 @@ public struct Token
         this.symbol = symbol;
     }
 
-    public string ToPrint()
+    public override readonly string ToString()
     {
         if (type == TokenType.Ident ||
             type == TokenType.Number ||
