@@ -1,0 +1,12 @@
+Integer(N) -> mov r1, N
+Boolean(N) -> N == true -> mov r1, 1
+           -> N == false -> mov r1, 0
+
+BinOp -> *CODE FOR RIGHT*
+         mov r2, r1
+         *CODE FOR LEFT*
+         *OPERATION BETWEEN r1 AND r2*
+UnaryOp -> *CODE FOR VALUE*
+           *OPERATION ON r1*
+
+If -> 

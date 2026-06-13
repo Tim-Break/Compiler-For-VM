@@ -1,6 +1,8 @@
 public enum TokenType
 {
-    If,         // if
+    CKeyword,   // if, elif, else, while, for, asm
+    TKeyword,   // break, continue
+    /*If,         // if
     Elif,       // elif
     Else,       // else
 
@@ -9,7 +11,7 @@ public enum TokenType
     Break,      // break
     Continue,   // continue
 
-    Asm,        // asm
+    Asm,        // asm */
 
     Ident,      // any identifer
 
@@ -18,7 +20,7 @@ public enum TokenType
 
     Operator,   // +, -, *, /, %, **, <<, >>, &, |, ^, ~, &&, ||, !, ==, <=, >=, <, >, !=
     Assign,     // =
-    ModifyOp,   // ++, --, +=, -=, *=, /=, %=, &=, |=, ^=, ~=
+    ModifyOp,   // ++, --, +=, -=, *=, /=, %=, **=, <<=, >>=, &=, |=, ^=, ~=
 
     LParen,     // (
     RParen,     // )
@@ -44,8 +46,10 @@ public struct Token
         [TokenType.Operator] = "operator",
         [TokenType.ModifyOp] = "operator",
 
-        [TokenType.If] = "if",
-        [TokenType.Elif] = "elif",
+        [TokenType.CKeyword] = "construction keyword",
+        [TokenType.TKeyword] = "transition keyword",
+
+        /*[TokenType.If] = "if",
         [TokenType.Else] = "else",
         
         [TokenType.While] = "while",
@@ -53,7 +57,7 @@ public struct Token
         [TokenType.Break] = "break",
         [TokenType.Continue] = "continue",
 
-        [TokenType.Asm] = "asm",
+        [TokenType.Asm] = "asm",*/
 
         [TokenType.Assign] = "=",
 
@@ -86,7 +90,9 @@ public struct Token
 
     public override readonly string ToString()
     {
-        if (type == TokenType.Ident ||
+        if (type == TokenType.CKeyword ||
+            type == TokenType.TKeyword ||
+            type == TokenType.Ident ||
             type == TokenType.Number ||
             type == TokenType.Bool ||
             type == TokenType.Operator ||

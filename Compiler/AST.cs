@@ -1,3 +1,4 @@
+using System.Formats.Asn1;
 using System.Text;
 static class StringUtil
 {
@@ -33,15 +34,15 @@ public class ASTNode
     public virtual void Print(int ident, bool last) {}
 }
 
-public class Assembly : ASTNode // TODO
+public class AssemblyNode : ASTNode // TODO
 {
 }
 
-public class Integer : ASTNode
+public class IntegerNode : ASTNode
 {
     public int value;
 
-    public Integer(int value)
+    public IntegerNode(int value)
     {
         this.value = value;
     }
@@ -52,11 +53,11 @@ public class Integer : ASTNode
     }
 }
 
-public class Boolean : ASTNode
+public class BooleanNode : ASTNode
 {
     public bool value;
 
-    public Boolean(bool value)
+    public BooleanNode(bool value)
     {
         this.value = value;
     }
@@ -67,23 +68,23 @@ public class Boolean : ASTNode
     }
 }
 
-public class Variable : ASTNode
+public class VariableNode : ASTNode
 {
     public string name;
 
-    public Variable(string name)
+    public VariableNode(string name)
     {
         this.name = name;
     }
 }
 
-public class Declare : ASTNode
+public class DeclareNode : ASTNode
 {
     public string typename;
     public string name;
     public ASTNode value;
 
-    public Declare(string typename, string name, ASTNode value)
+    public DeclareNode(string typename, string name, ASTNode value)
     {
         this.typename = typename;
         this.name = name;
@@ -91,25 +92,25 @@ public class Declare : ASTNode
     }
 }
 
-public class Assign : ASTNode
+public class AssignNode : ASTNode
 {
     public string name;
     public ASTNode value;
 
-    public Assign(string name, ASTNode value)
+    public AssignNode(string name, ASTNode value)
     {
         this.name = name;
         this.value = value;
     }
 }
 
-public class BinOp : ASTNode
+public class BinOpNode : ASTNode
 {
     public ASTNode left;
     public ASTNode right;
     public string op;
 
-    public BinOp(ASTNode left, ASTNode right, string op)
+    public BinOpNode(ASTNode left, ASTNode right, string op)
     {
         this.left = left;
         this.right = right;
@@ -124,12 +125,12 @@ public class BinOp : ASTNode
     }
 }
 
-public class UnaryOp : ASTNode
+public class UnaryOpNode : ASTNode
 {
     public ASTNode value;
     public string op;
 
-    public UnaryOp(ASTNode value, string op)
+    public UnaryOpNode(ASTNode value, string op)
     {
         this.value = value;
         this.op = op;
@@ -142,12 +143,50 @@ public class UnaryOp : ASTNode
     }
 }
 
-public class Block : ASTNode
+public class BlockNode : ASTNode
 {
-    public List<ASTNode> statements;
+    public ASTNode[] statements;
 
-    public Block(List<ASTNode> statements)
+    public BlockNode(ASTNode[] statements)
     {
         this.statements = statements;
     }
+}
+
+public class IfNode : ASTNode
+{
+    public ASTNode condition;
+    public ASTNode then;
+    public ASTNode? _else;
+
+    public IfNode(ASTNode condition, ASTNode then, ASTNode? _else = null)
+    {
+        this.condition = condition;
+        this.then = then;
+        this._else = _else;
+    }
+}
+
+public class WhileNode : ASTNode
+{
+    public ASTNode condition;
+    public ASTNode body;
+    public ASTNode? _else;
+
+    public WhileNode(ASTNode condition, ASTNode body, ASTNode? _else = null)
+    {
+        this.condition = condition;
+        this.body = body;
+        this._else = _else;
+    }
+}
+
+public class BreakNode : ASTNode
+{
+    
+}
+
+public class ContinueNode : ASTNode
+{
+    
 }

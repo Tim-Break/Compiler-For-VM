@@ -115,13 +115,18 @@ public class Lexer
                 char prev = (char)current;
                 Advance();
                 if (current == prev) {Advance(); return new Token(TokenType.ModifyOp, ""+prev+prev);}
-                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev+"=");}
+                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev);}
                 return new Token(TokenType.Operator, ""+prev);
             }
             if (current == '*')
             {
                 Advance();
-                if (current == '*') {Advance(); return new Token(TokenType.Operator, "**");}
+                if (current == '*') 
+                {
+                    Advance();
+                    if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, "**");}
+                    return new Token(TokenType.Operator, "**");
+                }
                 if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, "*=");}
                 return new Token(TokenType.Operator, "*");
             }
@@ -132,7 +137,7 @@ public class Lexer
             {
                 char prev = (char)current;
                 Advance();
-                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev+"=");}
+                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev);}
                 return new Token(TokenType.Operator, ""+prev);
             }
             if (current == '&' ||
@@ -140,7 +145,7 @@ public class Lexer
             {
                 char prev = (char)current;
                 Advance();
-                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev+"=");}
+                if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev);}
                 if (current == prev) {Advance(); return new Token(TokenType.Operator, ""+prev+prev);}
                 return new Token(TokenType.Operator, ""+prev);
             }
@@ -149,7 +154,12 @@ public class Lexer
             {
                 char prev = (char)current;
                 Advance();
-                if (current == prev) {Advance(); return new Token(TokenType.Operator, ""+prev+prev);}
+                if (current == prev) 
+                {
+                    Advance();
+                    if (current == '=') {Advance(); return new Token(TokenType.ModifyOp, ""+prev+prev);}
+                    return new Token(TokenType.Operator, ""+prev+prev);
+                }
                 if (current == '=') {Advance(); return new Token(TokenType.Operator, ""+prev+"=");}
                 return new Token(TokenType.Operator, ""+prev);
             }
