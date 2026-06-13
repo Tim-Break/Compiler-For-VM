@@ -9,4 +9,21 @@ BinOp -> *CODE FOR RIGHT*
 UnaryOp -> *CODE FOR VALUE*
            *OPERATION ON r1*
 
-If -> 
+If -> *CODE FOR CONDITION*
+      cmp r1, 1
+      jnz _if-else_#
+      *CODE FOR THEN BLOCK*
+      jmp _if-after_#
+      _if-else_#:
+      *CODE FOR ELSE BLOCK*
+      _if-after_#:
+
+While -> _while-start_#:
+         *CODE FOR CONDITION*
+         cmp r1, 1
+         jnz _while-else_#
+         *CODE FOR BODY*
+         jmp _while-start_#
+         _while-else_#:
+         *CODE FOR ELSE BLOCK*
+         _while-after_#:
