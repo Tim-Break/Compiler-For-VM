@@ -239,7 +239,7 @@ public class Parser
 
         ASTNode? _else = null;
         if (current.type == TokenType.CKeyword && current.value == "else")
-            _else = Block();
+            _else = Statement();
         
         return new IfNode(condition, then, _else);
     }
@@ -256,7 +256,7 @@ public class Parser
 
         ASTNode? _else = null;
         if (current.type == TokenType.CKeyword && current.value == "else")
-            _else = Block();
+            _else = Statement();
         
         return new WhileNode(condition, body, _else);
     }

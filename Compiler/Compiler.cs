@@ -1,11 +1,19 @@
 public class Compiler
 {
+    int ifCount = 0;
+
     string CompileNode(ASTNode node)
     {
         {if (node is IntegerNode n)
             return $"mov r1, {n.value}\n";}
         {if (node is BooleanNode n)
             return $"mov r1, {(n.value ? 1 : 0)}\n";}
+        {if (node is VariableNode n)
+            return $"lea r1, _var_{n.name}\nload r1, r1\n";}
+        {if (node is DeclareNode n)
+            return $"_var_{n.name}:\ndb 0\n{CompileNode(n.value)}lea r2, _var_{n.name}\nstore r2, r1\n";}
+        {if (node is AssignNode n)
+            return $"{CompileNode(n.value)}lea r2, _var_{n.name}\nstore r2, r1\n";}
         {if (node is BinOpNode n)
             {
                 string left = CompileNode(n.left);
@@ -28,7 +36,7 @@ public class Compiler
                     // "=="=> "xor r1, r2",
                     _ => throw new Exception($"Unknown operator '{n.op}'!")
                 };
-                return right + "mov r2, r1\n" + left + op + "\n";
+                return $"{right}mov r2, r1\n{left}{op}\n";
             }}
         {if (node is UnaryOpNode n)
             {
@@ -40,7 +48,22 @@ public class Compiler
                     //"!" => "mul r1, r2",
                     _ => throw new Exception($"Unknown operator '{n.op}'!")
                 };
-                return value + op + "\n";
+                return $"{value}{op}\n";
+            }}
+        {if (node is IfNode n)
+            {
+                string condition = CompileNode(n.condition);
+                string elseTarget = "_if-" + (n._else==null ? "after" : "else") + $"_{ifCount}";
+
+                string then = CompileNode(n.then);
+                string thenPostfix = n._else==null ? "" : $"jmp _if-after_{ifCount}\n";
+
+                string _else = "";
+                if (n._else != null)
+                    _else += $"_if-else_{ifCount}:\n" + CompileNode(n._else);
+
+                ifCount++;
+                return $"{condition}cmp r1, 1\njnz {elseTarget}\n{then}{thenPostfix}{_else}_if-after_{ifCount}:\n";
             }}
         throw new Exception("Unknown node!");
     }
